@@ -5,7 +5,7 @@ namespace Nutshell\Elasticsearch;
 use Elasticquent\ElasticquentTrait;
 use Elasticquent\ElasticquentResultCollection;
 
-trait ElasticSearchInputTrait {
+trait ElasticSearchTrait {
 
     use ElasticquentTrait;
 

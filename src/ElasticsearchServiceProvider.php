@@ -28,7 +28,16 @@ class ElasticsearchServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-
+        $this->app['command.import'] = $this->app->share(function($app)
+        {
+            return new Commands\ImportElasticSearchCommand();
+        });
+        $this->commands('command.import');
+        $this->app['command.clear'] = $this->app->share(function($app)
+        {
+            return new Commands\ClearElasticSearchCommand();
+        });
+        $this->commands('command.clear');
 	}
 
 	/**

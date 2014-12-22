@@ -15,9 +15,16 @@
         "fairholm/elasticquent": "master-dev"
     },
     "autoload": {
-        "psr-0": {
-            "Nutshell\\Elasticsearch\\": "src/"
+        "psr-4": {
+            "Nutshell\\Elasticsearch\\": "src/",
+            "Nutshell\\Elasticsearch\\Commands\\": "src/commands"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+
 }
