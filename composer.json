@@ -1,0 +1,23 @@
+{
+    "name": "nutshell/elasticsearch",
+    "description": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wouter Bohlken",
+            "email": "bohlkenw@gmail.com",
+            "homepage": "http://wouterbohlken.nl"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.*|5.0.*",
+        "fairholm/elasticquent": "master-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "Nutshell\\Elasticsearch\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
