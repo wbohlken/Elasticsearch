@@ -39,7 +39,6 @@ trait ElasticSearchTrait {
         if ($sort) {
             $params['body']['sort'][][$sort['var']] = array('order' => $sort['order']);
         }
-
         $result = $instance->getElasticSearchClient()->search($params);
 
         return new ElasticquentResultCollection($result, $instance = new static);

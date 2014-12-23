@@ -5,7 +5,8 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class ElasticSearchCommand extends Command {
+class ElasticSearchCommand extends Command
+{
     const DEFAULT_NUMBER_OF_RECORDS = 500;
 
     protected $validClasses = array('Nutshell\Elasticsearch\ElasticSearchTrait', 'Elasticquent\ElasticquentTrait');
@@ -32,11 +33,11 @@ class ElasticSearchCommand extends Command {
         $this->model = $this->argument('model');
         $this->all = $this->option('a');
         $this->limit = $this->option('limit');
-        if(!$this->limit) {
+        if (!$this->limit) {
             $this->limit = self::DEFAULT_NUMBER_OF_RECORDS;
         }
         $this->offset = $this->option('offset');
-        if(!$this->offset) {
+        if (!$this->offset) {
             $this->offset = 0;
         }
         $this->validate();
@@ -74,8 +75,10 @@ class ElasticSearchCommand extends Command {
      */
     protected function isValidModel()
     {
-        foreach (class_uses($this->model) as $class) {
-            if(in_array($class, $this->validClasses)) {
+        $inheritanceTree = array_merge(array($this->model), class_parents($this->model));
+        foreach($inheritanceTree as $class)
+        foreach (class_uses($class) as $usedClass) {
+            if (in_array($usedClass, $this->validClasses)) {
                 return true;
             }
         }
@@ -87,14 +90,13 @@ class ElasticSearchCommand extends Command {
      */
     protected function validate()
     {
-        if(class_exists($this->model)) {
-            if(!$this->isValidModel()) {
+        if (class_exists($this->model)) {
+            if (!$this->isValidModel()) {
                 die("\"" . $this->model . "\" does not support the Elasticsearch libary.\n"
                     . "Please use one of the following:\n"
                     . implode("\n", $this->validClasses) . "\n");
             }
-        }
-        else {
+        } else {
             die("Model " . $this->model . " not found.\n");
         }
     }
@@ -105,10 +107,12 @@ class ElasticSearchCommand extends Command {
     protected function prepare()
     {
         $builder = new $this->model();
-        if($this->all) {
-            $this->collection = $builder->all();
+        if(isset($builder->elasticSearchPrimaryKey)) {
+            $builder->primaryKey = $builder->elasticSearchPrimaryKey;
         }
-        else {
+        if ($this->all) {
+            $this->collection = $builder->all();
+        } else {
             $this->collection = $builder->take($this->limit)->skip($this->offset)->get();
         }
     }

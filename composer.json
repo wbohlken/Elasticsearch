@@ -12,7 +12,7 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.*|5.0.*",
-        "fairholm/elasticquent": "master-dev"
+        "fairholm/elasticquent": "1.0.*"
     },
     "autoload": {
         "psr-4": {
@@ -20,11 +20,6 @@
             "Nutshell\\Elasticsearch\\Commands\\": "src/commands"
         }
     },
-    "minimum-stability": "stable",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
-    }
+    "minimum-stability": "stable"
 
 }
