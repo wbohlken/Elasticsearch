@@ -107,13 +107,17 @@ class ElasticSearchCommand extends Command
     protected function prepare()
     {
         $builder = new $this->model();
-        if(isset($builder->elasticSearchPrimaryKey)) {
-            $builder->primaryKey = $builder->elasticSearchPrimaryKey;
-        }
         if ($this->all) {
             $this->collection = $builder->all();
         } else {
             $this->collection = $builder->take($this->limit)->skip($this->offset)->get();
+        }
+
+        // FIXME: If the primary key needs to be different, set it to each record individually.
+        if(isset($builder->elasticSearchPrimaryKey)) {
+            foreach($this->collection as $record) {
+                $record->primaryKey = $builder->elasticSearchPrimaryKey;
+            }
         }
     }
 
