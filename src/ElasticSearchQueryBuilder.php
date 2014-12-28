@@ -1,7 +1,8 @@
 <?php
 namespace Nutshell\Elasticsearch;
 
-class ElasticSearchQueryBuilder {
+class ElasticSearchQueryBuilder
+{
 
     private $filterRange;
     private $filterTerms;
@@ -11,7 +12,8 @@ class ElasticSearchQueryBuilder {
     /**
      *
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->filterRange = array();
         $this->filterTerms = array();
         $this->queryMatch = array();
@@ -24,7 +26,8 @@ class ElasticSearchQueryBuilder {
      * @param $attributeName
      * @param array $range
      */
-    public function addFilterRange($attributeName, $from, $to) {
+    public function addFilterRange($attributeName, $from, $to)
+    {
         $newRange = array();
         $newRange['from'] = $from;
         $newRange['to'] = $to;
@@ -38,7 +41,8 @@ class ElasticSearchQueryBuilder {
      * @param $attributeName
      * @param array $values
      */
-    public function addFilterArray($attributeName, array $values) {
+    public function addFilterArray($attributeName, array $values)
+    {
         $this->filterTerms[]['terms'][$attributeName] = $values;
     }
 
@@ -48,7 +52,8 @@ class ElasticSearchQueryBuilder {
      * @param $attributeName
      * @param $value
      */
-    public function addQueryMatch($attributeName, $value) {
+    public function addQueryMatch($attributeName, $value)
+    {
         $this->queryMatch[]['match'][$attributeName] = $value;
     }
 
@@ -56,12 +61,15 @@ class ElasticSearchQueryBuilder {
      * Sets a value that must be matched in multiple fields
      *
      * @param $attributeName
-     * @param $value
+     * @param $query
      */
-    public function addQueryMultiMatch(array $fields, $value) {
+    public function addQueryMultiMatch(array $fields, $query, $operator = 'and')
+    {
         $newMultiMatch = array();
-        $newMultiMatch['query'] = $value;
+        $newMultiMatch['query'] = $query;
         $newMultiMatch['fields'] = $fields;
+        $newMultiMatch['type'] = 'cross_fields';
+        $newMultiMatch['operator'] = $operator;
         $this->queryMatch[]['multi_match'] = $newMultiMatch;
     }
 
@@ -70,7 +78,8 @@ class ElasticSearchQueryBuilder {
      *
      * @return array
      */
-    public function getQuery() {
+    public function get()
+    {
         $query = array();
 
         $queryMatches = array_merge($this->queryMatch, $this->queryMultiMatch);

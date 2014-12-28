@@ -37,10 +37,47 @@ trait ElasticSearchTrait {
         }
 
         if ($sort) {
-            $params['body']['sort'][][$sort['var']] = array('order' => $sort['order']);
+            if(!is_array($sort)) {
+                $sort = array($sort, 'asc');
+            }
+            $variable = $sort[0];
+            $order = $sort[1];
+            $params['body']['sort'][][$variable] = array('order' => $order);
         }
         $result = $instance->getElasticSearchClient()->search($params);
 
         return new ElasticquentResultCollection($result, $instance = new static);
+    }
+
+    /**
+     * @param array $options
+     * @return mixed
+     * @throws \Elasticquent\Exception
+     */
+    public function finishSave(array $options) {
+        try {
+            if (isset(self::$elasticSearchRelations) && is_array(self::$elasticSearchRelations)) {
+                $elasticSearchRelations = self::$elasticSearchRelations;
+                $this->load($elasticSearchRelations);
+            }
+            $this->addToIndex();
+        }
+        catch(\Exception $e) {
+//            return $e->getMessage();
+        }
+        return parent::finishSave($options);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function delete() {
+        try {
+            $this->removeFromIndex();
+        }
+        catch(\Exception $e) {
+//            return $e->getMessage();
+        }
+        return parent::delete();
     }
 } 

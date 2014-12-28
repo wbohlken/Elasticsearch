@@ -76,10 +76,11 @@ class ElasticSearchCommand extends Command
     protected function isValidModel()
     {
         $inheritanceTree = array_merge(array($this->model), class_parents($this->model));
-        foreach($inheritanceTree as $class)
-        foreach (class_uses($class) as $usedClass) {
-            if (in_array($usedClass, $this->validClasses)) {
-                return true;
+        foreach($inheritanceTree as $class) {
+            foreach (class_uses($class) as $usedClass) {
+                if (in_array($usedClass, $this->validClasses)) {
+                    return true;
+                }
             }
         }
         return false;
