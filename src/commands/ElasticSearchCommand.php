@@ -18,10 +18,11 @@ class ElasticSearchCommand extends Command
 
     protected $collection;
 
+    protected $builder;
+
     /**
      * Create a new command instance.
      *
-     * @return void
      */
     public function __construct()
     {
@@ -31,6 +32,7 @@ class ElasticSearchCommand extends Command
     protected function fire()
     {
         $this->model = $this->argument('model');
+        $this->builder = new $this->model();
         $this->all = $this->option('a');
         $this->limit = $this->option('limit');
         if (!$this->limit) {
@@ -41,6 +43,7 @@ class ElasticSearchCommand extends Command
             $this->offset = 0;
         }
         $this->validate();
+        $this->load();
         $this->prepare();
     }
 
@@ -87,7 +90,7 @@ class ElasticSearchCommand extends Command
     }
 
     /**
-     *
+     * Checks if the model name is valid and it uses the required trait
      */
     protected function validate()
     {
@@ -103,21 +106,26 @@ class ElasticSearchCommand extends Command
     }
 
     /**
+     * Loads the collection of data
+     */
+    protected function load()
+    {
+        if ($this->all) {
+            $this->collection = $this->builder->all();
+        } else {
+            $this->collection = $this->builder->take($this->limit)->skip($this->offset)->get();
+        }
+    }
+
+    /**
      *
      */
     protected function prepare()
     {
-        $builder = new $this->model();
-        if ($this->all) {
-            $this->collection = $builder->all();
-        } else {
-            $this->collection = $builder->take($this->limit)->skip($this->offset)->get();
-        }
-
         // FIXME: If the primary key needs to be different, set it to each record individually.
-        if(isset($builder->elasticSearchPrimaryKey)) {
+        if(isset($this->builder->elasticSearchPrimaryKey)) {
             foreach($this->collection as $record) {
-                $record->primaryKey = $builder->elasticSearchPrimaryKey;
+                $record->primaryKey = $this->builder->elasticSearchPrimaryKey;
             }
         }
     }

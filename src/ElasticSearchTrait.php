@@ -45,6 +45,7 @@ trait ElasticSearchTrait {
             $params['body']['sort'][][$variable] = array('order' => $order);
         }
         $result = $instance->getElasticSearchClient()->search($params);
+        $result['aggregations'] = array();
 
         return new ElasticquentResultCollection($result, $instance = new static);
     }

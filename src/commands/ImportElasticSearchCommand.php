@@ -32,13 +32,24 @@ class ImportElasticSearchCommand extends ElasticSearchCommand
         $this->import();
     }
 
-    private function import()
+    /**
+     * Autoload all relations specified by the $elasticSearchRelations variable.
+     */
+    protected function prepare()
     {
         $modelName = $this->model;
         if (isset($modelName::$elasticSearchRelations) && is_array($modelName::$elasticSearchRelations)) {
             $elasticSearchRelations = $modelName::$elasticSearchRelations;
             $this->collection->load($elasticSearchRelations);
         }
+        parent::prepare();
+    }
+
+    /**
+     *
+     */
+    private function import()
+    {
         $this->collection->addToIndex();
     }
 
